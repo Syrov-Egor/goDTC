@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"math"
 	"os"
 	"slices"
 	"strconv"
@@ -137,6 +138,11 @@ func NewUnitCellData(sym Symmetry, t []float64, a []float64, params ...[]float64
 	if err != nil {
 		return nil, err
 	}
+
+	// turn degrees to radiants
+	ucd.Alpha = degreesIntoRadians(ucd.Alpha)
+	ucd.Beta = degreesIntoRadians(ucd.Beta)
+	ucd.Gamma = degreesIntoRadians(ucd.Gamma)
 	return ucd, nil
 }
 
@@ -160,8 +166,17 @@ func fillSlice(length int, value float64) []float64 {
 	return res
 }
 
+// Turn degrees to radians by multiplying them by the factor of (pi/180)
+func degreesIntoRadians(data []float64) []float64 {
+	res := make([]float64, len(data))
+	for i, datapoint := range data {
+		res[i] = (math.Pi / 180) * datapoint
+	}
+	return res
+}
+
 // Read CSV file with data, parse it and turn into UnitCellData object
-func CSVToUnitCell(filepath string, sym Symmetry) (*UnitCellData, error) {
+func CSVToUnitCell(filepath string, separator string, sym Symmetry) (*UnitCellData, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
@@ -174,7 +189,7 @@ func CSVToUnitCell(filepath string, sym Symmetry) (*UnitCellData, error) {
 		return nil, err
 	}
 
-	csvData, err := parseCSVDataIntoFloats(records)
+	csvData, err := parseCSVDataIntoFloats(records, separator)
 	if err != nil {
 		return nil, err
 	}
@@ -188,6 +203,7 @@ func CSVToUnitCell(filepath string, sym Symmetry) (*UnitCellData, error) {
 	return ucd, nil
 }
 
+// Swap rows and cols of the table
 func pivotFloatSlices(data [][]float64) [][]float64 {
 	if len(data) == 0 {
 		return [][]float64{}
@@ -210,12 +226,13 @@ func pivotFloatSlices(data [][]float64) [][]float64 {
 	return pivoted
 }
 
-func parseCSVDataIntoFloats(records [][]string) ([][]float64, error) {
+// Parse string rows of floats with some separator
+func parseCSVDataIntoFloats(records [][]string, sep string) ([][]float64, error) {
 	csvData := [][]float64{}
 	for _, record := range records {
 		row := []float64{}
 		for _, field := range record {
-			parsed := strings.SplitSeq(field, ";")
+			parsed := strings.SplitSeq(field, sep)
 			for parsedString := range parsed {
 				if parsedString != "" {
 					float, err := strconv.ParseFloat(parsedString, 64)
