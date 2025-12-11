@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	degrees, err := NewDegress([]int{2, 2, 1, 1, 1, 1})
+	degrees, err := NewDegrees([]int{2, 2, 1, 1, 1, 1})
 	if err != nil {
 		fmt.Println(err)
 	}

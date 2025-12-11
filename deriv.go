@@ -14,7 +14,7 @@ type Degrees struct {
 	Gamma int
 }
 
-func NewDegress(degrees []int) (*Degrees, error) {
+func NewDegrees(degrees []int) (*Degrees, error) {
 	if len(degrees) != 6 {
 		return nil, fmt.Errorf("there should be 6 degrees for polynomial functions, got %d", len(degrees))
 	}
@@ -75,15 +75,11 @@ func (u UnitCellFuncsOverT) String() string {
 }
 
 func fitData(Tdata []float64, Pdata []float64, degree int) (*FitCurve, error) {
-	aData, err := NewData2D(Tdata, Pdata)
+	data, err := NewData2D(Tdata, Pdata)
 	if err != nil {
 		return nil, err
 	}
-	a, err := PolyFit(*aData, degree)
-	if err != nil {
-		return nil, err
-	}
-	return a, nil
+	return PolyFit(*data, degree)
 }
 
 type Derivatives struct {

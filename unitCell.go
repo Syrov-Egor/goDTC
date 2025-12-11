@@ -168,9 +168,10 @@ func fillSlice(length int, value float64) []float64 {
 
 // Turn degrees to radians by multiplying them by the factor of (pi/180)
 func degreesIntoRadians(data []float64) []float64 {
+	pi180 := math.Pi / 180
 	res := make([]float64, len(data))
 	for i, datapoint := range data {
-		res[i] = (math.Pi / 180) * datapoint
+		res[i] = pi180 * datapoint
 	}
 	return res
 }
@@ -228,9 +229,9 @@ func pivotFloatSlices(data [][]float64) [][]float64 {
 
 // Parse string rows of floats with some separator
 func parseCSVDataIntoFloats(records [][]string, sep string) ([][]float64, error) {
-	csvData := [][]float64{}
+	csvData := make([][]float64, 0, len(records))
 	for _, record := range records {
-		row := []float64{}
+		row := make([]float64, 0, len(record)*2)
 		for _, field := range record {
 			parsed := strings.SplitSeq(field, sep)
 			for parsedString := range parsed {

@@ -9,6 +9,11 @@ import (
 	"gonum.org/v1/gonum/stat"
 )
 
+const (
+	lowerDegree int = 1
+	upperDegree int = 9
+)
+
 // Representation of a two-dimentional data set with float numbers
 type Data2D struct {
 	x []float64
@@ -46,7 +51,7 @@ func (f FitCurve) String() string {
 
 // Fit a 2D dataset with polynomial curve of some degree between 1-9
 func PolyFit(data Data2D, degree int) (*FitCurve, error) {
-	if degree < 1 || degree > 9 {
+	if degree < lowerDegree || degree > upperDegree {
 		return nil, fmt.Errorf("polynomial order should lay inside [1:9] interval")
 	}
 	if len(data.x) < degree+1 {
