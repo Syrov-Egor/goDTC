@@ -24,6 +24,19 @@ func (p *Polynomial) Evaluate(x float64) float64 {
 	return result
 }
 
+// Naively calculate the 1st derivative of a polynomial function
+func (p Polynomial) Derivative() *Polynomial {
+	if len(p.coeffs) == 0 || len(p.coeffs) == 1 {
+		return &Polynomial{coeffs: []float64{}}
+	}
+	derivCoeffs := make([]float64, len(p.coeffs)-1)
+	for i := range derivCoeffs {
+		derivCoeffs[i] = float64(i+1) * p.coeffs[i+1]
+	}
+
+	return &Polynomial{coeffs: derivCoeffs}
+}
+
 func (p Polynomial) String() string {
 	if len(p.coeffs) == 0 {
 		return "0"
